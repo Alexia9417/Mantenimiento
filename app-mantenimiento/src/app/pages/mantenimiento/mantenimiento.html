@@ -1,0 +1,74 @@
+<div class="producto-container">
+  <h2>Mantenimiento de Productos</h2>
+  <button class="btn-logout" (click)="logout()">Cerrar sesión</button>
+  <!-- Formulario -->
+  <div class="form-card">
+    <div *ngIf="cargando" class="loading">Cargando productos...</div>
+    <h3>Agregar / Editar Producto</h3>
+    <div class="form-grid">
+      <input type="text" placeholder="Nombre del producto" [(ngModel)]="nombre" />
+      <input type="text" placeholder="Descripción" [(ngModel)]="descripcion" />
+      <input type="number" placeholder="Precio" step="0.01" [(ngModel)]="precio" />
+      <input type="number" placeholder="Stock disponible" [(ngModel)]="stock" />
+
+      <select [(ngModel)]="idCategoria">
+        <option value="">Seleccionar Categoría</option>
+        <option *ngFor="let c of categorias" [value]="c.idCategoria">{{ c.nombreCategoria }}</option>
+      </select>
+
+      <select [(ngModel)]="idMarca">
+        <option value="">Seleccionar Marca</option>
+        <option *ngFor="let m of marcas" [value]="m.idMarca">{{ m.nombreMarca }}</option>
+      </select>
+
+      <div class="botones">
+        <button class="btn-guardar" (click)="guardar()">
+          {{ editId ? 'Actualizar' : 'Agregar' }}
+        </button>
+        <button class="btn-limpiar" (click)="limpiarForm()">Limpiar</button>
+      </div>
+    </div>
+
+    <!-- Buscador -->
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar producto por id..." [(ngModel)]="searchTerm" (ngModelChange)="buscar()" />
+      <button class="btn-buscar" (click)="buscar()">Buscar</button>
+    </div>
+
+    <!-- Tabla -->
+    <table class="tabla-productos" *ngIf="!cargando && productos.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Activo</th>
+          <th>Fecha Registro</th>
+          <th>Editar</th>
+          <th>Eliminar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of productos">
+          <td>{{ p.idProducto }}</td>
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.descripcion }}</td>
+          <td>₡{{ p.precio }}</td>
+          <td>{{ p.stock }}</td>
+          <td>{{ p.activo ? 'Sí' : 'No' }}</td>
+          <td>{{ p.fechaRegistro | date: 'dd/MM/yyyy' }}</td>
+          <td><button class="btn-editar" (click)="editarProducto(p)">Editar</button></td>
+          <td><button class="btn-eliminar" (click)="eliminarProducto(p.idProducto)">Eliminar</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!cargando && productos.length === 0" class="vacio">
+      No hay productos registrados.
+    </div>
+    <div *ngIf="errorMsg" class="error">
+      {{ errorMsg }}
+    </div>
+  </div>
